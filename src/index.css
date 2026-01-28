@@ -1,18 +1,20 @@
+/* index.css or globals.css */
 @import "tailwindcss";
 
 @theme {
-  --color-emerald-500: #06BFBF; /* Official Exicom Robin's Egg Blue/Green */
-  --font-luxury: "Syncopate", sans-serif;
+  /* This creates the 'emerald-500' color used in your app */
+  --color-emerald-500: #06BFBF; 
+  
+  /* Use a clean luxury font fallback */
+  --font-luxury: "Syncopate", ui-sans-serif, system-ui, sans-serif;
+  
+  /* If you want to customize your shadow or blur to match Exicom branding: */
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
-:root {
-  background-color: #050505;
-  color: white;
-  font-family: 'Inter', sans-serif;
-}
-
-.glass {
-  background: rgba(15, 15, 15, 0.7);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+/* Base styles for the dark-mode splash screen */
+@layer base {
+  body {
+    @apply bg-black antialiased;
+  }
 }
