@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xcharge | Powered by Exicom</title>
+    <style>
+      body, html { margin: 0; padding: 0; background-color: #050505; overflow: hidden; font-family: 'Inter', sans-serif; }
+      #initial-loader {
+        position: fixed; inset: 0; background: #050505;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        z-index: 9999; transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .brand-shimmer {
+        font-size: 2.5rem; font-weight: 900; color: #fff; letter-spacing: -0.05em; font-style: italic;
+        background: linear-gradient(90deg, #050505, #fff, #050505);
+        background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        animation: shimmer 3s linear infinite;
+      }
+      @keyframes shimmer { to { background-position: 200% center; } }
+      body.loaded #initial-loader { opacity: 0; pointer-events: none; }
+    </style>
+  </head>
+  <body>
+    <div id="initial-loader">
+      <div class="brand-shimmer">XCHARGE</div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script>
+      window.addEventListener('load', () => {
+        setTimeout(() => document.body.classList.add('loaded'), 1000);
+      });
+    </script>
+  </body>
+</html>

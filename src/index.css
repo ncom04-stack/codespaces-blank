@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-emerald-500: #06BFBF; /* Official Exicom Robin's Egg Blue/Green */
+  --font-luxury: "Syncopate", sans-serif;
+}
+
+:root {
+  background-color: #050505;
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
+
+.glass {
+  background: rgba(15, 15, 15, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
