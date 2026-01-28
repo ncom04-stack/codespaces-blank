@@ -1,7 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  plugins: [react()],
-  base: '/', // This is the fix for the "First Screen Only" issue
+  plugins: [
+    react(),
+    tailwindcss(), // Add this to the plugins array
+  ],
+  base: '/',
 })
