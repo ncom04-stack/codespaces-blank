@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Zap, Globe, BatteryCharging, ChevronLeft, ArrowRight, ShieldCheck, Cpu, Navigation } from 'lucide-react';
+import { Zap, Globe, BatteryCharging, ChevronLeft, ArrowRight, ShieldCheck, Cpu, Navigation, MapPin, Gauge, Timer, Info } from 'lucide-react';
 
 const App = () => {
   const [stage, setStage] = useState('welcome'); 
@@ -10,25 +10,29 @@ const App = () => {
 
   const trivia = [
     { title: "Harmony OS", detail: "Exicom's proprietary stack ensuring 99.9% charger uptime." },
-    { title: "Dynamic Load Sharing", detail: "Optimized distribution between guns based on real-time demand." },
+    { title: "Dynamic Load Sharing", detail: "Optimized power distribution based on real-time demand." },
     { title: "Pioneer Tech", detail: "Exicom launched India's first EV power plant in 1994." },
-    { title: "Tritium Holster", detail: "Featuring premium ergonomics and assisted retraction." },
-    { title: "Modular Design", detail: "40kW modular units allow effortless power upgrades." }
+    { title: "Tritium Holster", detail: "Premium ergonomics with assisted cable retraction." },
+    { title: "Modular Design", detail: "40kW units allowing effortless power upgrades." }
   ];
 
   const pods = [
-    { id: 1, name: 'HARMONY DIRECT 2.0', power: '240kW', eta: 3, dist: '0.6km', lat: 28.4490, lng: 77.0430, intel: "Flagship liquid-cooled architecture." },
-    { id: 2, name: 'HARMONY BOOST', power: '400kW', eta: 5, dist: '1.2km', lat: 28.4410, lng: 77.0350, intel: "Battery-buffered ultra charging." },
-    { id: 3, name: 'HARMONY DISTRIBUTED', power: '600kW', eta: 9, dist: '2.4km', lat: 28.4550, lng: 77.0500, intel: "Scalable power matrix system." }
+    { id: 1, name: 'HARMONY DIRECT 2.0', power: '240kW', eta: 3, dist: '0.6km', lat: 28.4490, lng: 77.0430, intel: "Flagship liquid-cooled architecture for ultra-fast throughput." },
+    { id: 2, name: 'HARMONY BOOST', power: '400kW', eta: 5, dist: '1.2km', lat: 28.4410, lng: 77.0350, intel: "BESS-integrated system for grid-independent high power." },
+    { id: 3, name: 'HARMONY DISTRIBUTED', power: '600kW', eta: 9, dist: '2.4km', lat: 28.4550, lng: 77.0500, intel: "Scalable power matrix for heavy-duty fleet hubs." },
+    { id: 4, name: 'HARMONY WALL', power: '30kW', eta: 14, dist: '4.8km', lat: 28.4600, lng: 77.0600, intel: "Compact DC charging for urban hospitality & retail." },
+    { id: 5, name: 'HARMONY DIRECT', power: '120kW', eta: 19, dist: '6.1km', lat: 28.4300, lng: 77.0200, intel: "Proven industrial reliability for long-range transit." },
+    { id: 6, name: 'HARMONY GEN 1.5', power: '60kW', eta: 25, dist: '8.2km', lat: 28.4700, lng: 77.0700, intel: "Legacy standard with high-durability performance." }
   ];
 
-  // FIX: Corrected Map URL syntax
   const getMapUrl = () => {
     const lat = selectedPod ? selectedPod.lat : 28.4472;
     const lng = selectedPod ? selectedPod.lng : 77.0406;
-    // Standard embed format for coordinate-based maps
-    return `https://maps.google.com/maps?q=${lat},${lng}&t=k&z=17&ie=UTF8&iwloc=&output=embed`;
+    return `https://www.google.com/maps/embed/v1/view?key=YOUR_API_KEY_OPTIONAL&center=${lat},${lng}&zoom=16&maptype=satellite`;
+    // Note: For a live demo without a key, we'll use the coordinate fallback:
   };
+  
+  const mapFallback = `https://maps.google.com/maps?q=${selectedPod?.lat || 28.4472},${selectedPod?.lng || 77.0406}&t=k&z=16&ie=UTF8&iwloc=&output=embed`;
 
   useEffect(() => {
     if (stage === 'loading') {
@@ -66,53 +70,107 @@ const App = () => {
   };
 
   return (
-    <div className={`h-screen w-screen overflow-hidden font-sans ${stage === 'welcome' || stage === 'loading' || stage === 'success' ? 'bg-black' : 'bg-white'}`}>
+    <div className="h-screen w-screen overflow-hidden bg-black text-white font-sans selection:bg-emerald-500">
       
+      {/* STAGE: WELCOME */}
       {stage === 'welcome' && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center p-6 text-center">
-          <h1 className="text-7xl font-black italic tracking-tighter text-white uppercase mb-4">XCHARGE<span className="text-emerald-500">.</span></h1>
-          <button onClick={() => setStage('map')} className="bg-white text-black px-12 py-5 rounded-full text-[11px] font-black uppercase tracking-[0.3em] hover:bg-emerald-500 hover:text-white transition-all">Access Fleet</button>
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center p-6 text-center bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-900 to-black">
+          <div className="mb-6 opacity-50"><Zap size={40} className="text-emerald-500" /></div>
+          <h1 className="text-8xl font-black italic tracking-tighter text-white uppercase mb-4 leading-none">XCHARGE<span className="text-emerald-500">.</span></h1>
+          <p className="text-zinc-500 font-medium tracking-[0.4em] uppercase text-[10px] mb-12">Premier Exicom Fleet Management</p>
+          <button onClick={() => setStage('map')} className="group relative bg-white text-black px-16 py-6 rounded-full text-[11px] font-black uppercase tracking-[0.3em] overflow-hidden transition-all hover:scale-105 active:scale-95">
+            <span className="relative z-10">Initialize Access</span>
+            <div className="absolute inset-0 bg-emerald-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+          </button>
         </div>
       )}
 
+      {/* MAIN INTERFACE: MAP & SIDEBAR */}
       {(stage === 'map' || stage === 'details') && (
         <div className="flex h-full w-full">
-           <div className="flex-grow relative bg-gray-900">
-             <iframe 
-                key={selectedPod ? selectedPod.id : 'default'}
-                title="Map"
-                className="w-full h-full border-none"
-                src={getMapUrl()}
-             />
-             <div className="absolute top-8 left-8 p-5 bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl z-20">
-               <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Active Sector</p>
-               <h2 className="text-lg font-bold italic uppercase text-black">Sector 32, Gurugram</h2>
+           {/* MAP AREA */}
+           <div className="flex-grow relative bg-zinc-950">
+             <iframe title="Map" className="w-full h-full border-none grayscale-[0.3] contrast-[1.1] brightness-[0.8]" src={mapFallback} />
+             <div className="absolute top-10 left-10 p-6 bg-black/60 backdrop-blur-xl border border-white/10 rounded-[2rem] shadow-2xl z-20">
+               <div className="flex items-center gap-3">
+                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                 <p className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Sector 32, Gurugram • LIVE</p>
+               </div>
              </div>
            </div>
 
-           <div className="w-[400px] bg-white p-10 border-l border-gray-100 flex flex-col overflow-y-auto shadow-2xl z-10">
-             <h2 className="text-3xl font-black italic uppercase mb-8">Harmony Fleet</h2>
-             {pods.map(pod => (
-               <div key={pod.id} onClick={() => { setSelectedPod(pod); setStage('details'); }} className={`p-6 mb-4 rounded-3xl border transition-all cursor-pointer ${selectedPod?.id === pod.id ? 'border-emerald-500 bg-emerald-50' : 'bg-gray-50 hover:border-gray-300'}`}>
-                 <h3 className="font-black italic uppercase text-black">{pod.name}</h3>
-                 <p className="text-[10px] text-gray-400 font-bold uppercase">{pod.power} • {pod.eta} MIN AWAY</p>
-               </div>
-             ))}
+           {/* PREMIUM SIDEBAR */}
+           <div className="w-[450px] bg-black/80 backdrop-blur-3xl border-l border-white/5 flex flex-col z-40">
+             <div className="p-10 border-b border-white/5">
+                <h2 className="text-xs font-black text-emerald-500 tracking-[0.5em] uppercase mb-2">Available Fleet</h2>
+                <h3 className="text-4xl font-black italic uppercase text-white">Harmony.</h3>
+             </div>
+             
+             <div className="flex-grow overflow-y-auto custom-scrollbar p-6 space-y-4">
+               {pods.map(pod => (
+                 <div 
+                   key={pod.id} 
+                   onClick={() => { setSelectedPod(pod); setStage('details'); }} 
+                   className={`group p-6 rounded-[2rem] border transition-all duration-300 cursor-pointer ${selectedPod?.id === pod.id ? 'bg-emerald-500 border-emerald-400' : 'bg-white/5 border-white/5 hover:border-white/20 hover:bg-white/10'}`}
+                 >
+                   <div className="flex justify-between items-start mb-4">
+                     <div>
+                       <h3 className={`font-black italic uppercase text-lg leading-none ${selectedPod?.id === pod.id ? 'text-black' : 'text-white'}`}>{pod.name}</h3>
+                       <p className={`text-[9px] font-black tracking-widest mt-2 ${selectedPod?.id === pod.id ? 'text-black/60' : 'text-zinc-500'}`}>{pod.power} PEAK OUTPUT</p>
+                     </div>
+                     <ArrowRight className={`${selectedPod?.id === pod.id ? 'text-black' : 'text-zinc-700'}`} size={20} />
+                   </div>
+                   <div className="flex gap-4">
+                      <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-bold ${selectedPod?.id === pod.id ? 'bg-black/10 text-black' : 'bg-white/5 text-zinc-400'}`}>
+                        <Timer size={12} /> {pod.eta} MIN
+                      </div>
+                      <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-bold ${selectedPod?.id === pod.id ? 'bg-black/10 text-black' : 'bg-white/5 text-zinc-400'}`}>
+                        <MapPin size={12} /> {pod.dist}
+                      </div>
+                   </div>
+                 </div>
+               ))}
+             </div>
            </div>
            
+           {/* PREMIUM BOOKING SCREEN */}
            {stage === 'details' && selectedPod && (
-              <div className="absolute inset-0 bg-white/95 backdrop-blur-xl z-[55] flex items-center justify-center p-12 animate-in fade-in zoom-in duration-300">
-                <div className="max-w-xl w-full text-center">
-                  <h2 className="text-5xl font-black italic uppercase mb-4 text-black">{selectedPod.name}</h2>
-                  <p className="text-gray-500 mb-10 italic">"{selectedPod.intel}"</p>
-                  <button onClick={() => setStage('loading')} className="w-full bg-black text-white py-6 rounded-3xl font-black uppercase tracking-widest hover:bg-emerald-500 transition-all">Confirm Booking & Verify System</button>
-                  <button onClick={() => setStage('map')} className="mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Back to Map</button>
+              <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-[55] flex items-center justify-end animate-in fade-in duration-500">
+                <div className="h-full w-[600px] bg-zinc-950 border-l border-white/10 p-16 flex flex-col justify-center animate-in slide-in-from-right-full duration-700">
+                  <button onClick={() => setStage('map')} className="absolute top-10 right-10 text-zinc-500 hover:text-white transition-colors"><ChevronLeft size={32} /></button>
+                  
+                  <div className="mb-12">
+                    <span className="text-emerald-500 font-black tracking-[0.4em] uppercase text-[10px] border-b border-emerald-500/30 pb-2">Unit Configuration</span>
+                    <h2 className="text-6xl font-black italic uppercase mt-6 mb-4">{selectedPod.name}</h2>
+                    <p className="text-zinc-400 text-lg leading-relaxed font-medium">"{selectedPod.intel}"</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-6 mb-16">
+                    <div className="p-8 rounded-[2rem] bg-white/5 border border-white/5">
+                      <Gauge className="text-emerald-500 mb-4" size={24} />
+                      <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">Max Power</p>
+                      <p className="text-2xl font-black italic">{selectedPod.power}</p>
+                    </div>
+                    <div className="p-8 rounded-[2rem] bg-white/5 border border-white/5">
+                      <ShieldCheck className="text-emerald-500 mb-4" size={24} />
+                      <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">Status</p>
+                      <p className="text-2xl font-black italic">CERTIFIED</p>
+                    </div>
+                  </div>
+
+                  <button onClick={() => setStage('loading')} className="group flex items-center justify-between w-full bg-emerald-500 text-black p-8 rounded-[2rem] font-black uppercase tracking-widest hover:bg-white transition-all duration-300 scale-100 hover:scale-[1.02]">
+                    <span className="text-xl italic">Confirm Dispatch</span>
+                    <div className="bg-black text-white p-3 rounded-2xl group-hover:bg-emerald-500 group-hover:text-black transition-colors"><ArrowRight /></div>
+                  </button>
                 </div>
               </div>
            )}
         </div>
       )}
 
+      {/* (STAGES: LOADING & SUCCESS REMAIN THE SAME FROM PREVIOUS CODE) */}
+      {/* ... keeping logic consistent ... */}
+      
       {stage === 'loading' && (
         <div className="absolute inset-0 z-[70] bg-black flex flex-col items-center justify-center p-8 text-white">
           <div className="relative w-28 h-52 border-[5px] border-white/10 rounded-[2rem] p-1.5 mb-10 overflow-hidden">
@@ -128,7 +186,7 @@ const App = () => {
             <div className="animate-in fade-in slide-in-from-bottom-2 duration-700" key={triviaIndex}>
               <p className="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Exicom Feature</p>
               <h3 className="text-lg font-bold italic uppercase text-white mb-2">{trivia[triviaIndex].title}</h3>
-              <p className="text-xs text-gray-400 font-medium leading-relaxed">{trivia[triviaIndex].detail}</p>
+              <p className="text-xs text-zinc-400 font-medium leading-relaxed">{trivia[triviaIndex].detail}</p>
             </div>
           </div>
         </div>
@@ -140,21 +198,21 @@ const App = () => {
              <div className="absolute inset-0 bg-emerald-500/20 blur-3xl rounded-full scale-150 animate-pulse" />
              <Navigation className="text-emerald-500 relative animate-bounce" size={80} />
           </div>
-          <h2 className="text-6xl font-black italic tracking-tighter uppercase mb-2">Tracking Unit</h2>
-          <p className="text-emerald-500 font-black uppercase tracking-[0.5em] text-[10px] mb-16">In Transit to your location</p>
+          <h2 className="text-7xl font-black italic tracking-tighter uppercase mb-2">Tracking.</h2>
+          <p className="text-emerald-500 font-black uppercase tracking-[0.5em] text-[10px] mb-16">Unit in transit to location</p>
           
-          <div className="grid grid-cols-2 gap-8 w-full max-w-md mb-16">
-            <div className="bg-white/5 border border-white/10 p-8 rounded-[2.5rem]">
-              <p className="text-[9px] font-black text-gray-500 uppercase mb-2">Live ETA</p>
-              <h3 className="text-4xl font-black italic text-white">{formatTime(secondsLeft)}</h3>
+          <div className="grid grid-cols-2 gap-8 w-full max-w-lg mb-16">
+            <div className="bg-zinc-900 border border-white/5 p-10 rounded-[3rem] shadow-2xl">
+              <p className="text-[9px] font-black text-zinc-500 uppercase mb-2 tracking-widest">Live Arrival</p>
+              <h3 className="text-5xl font-black italic text-white">{formatTime(secondsLeft)}</h3>
             </div>
-            <div className="bg-white/5 border border-white/10 p-8 rounded-[2.5rem]">
-              <p className="text-[9px] font-black text-gray-500 uppercase mb-2">Distance</p>
-              <h3 className="text-4xl font-black italic text-white">{selectedPod.dist}</h3>
+            <div className="bg-zinc-900 border border-white/5 p-10 rounded-[3rem] shadow-2xl">
+              <p className="text-[9px] font-black text-zinc-500 uppercase mb-2 tracking-widest">Range Remaining</p>
+              <h3 className="text-5xl font-black italic text-white">{selectedPod.dist}</h3>
             </div>
           </div>
 
-          <button onClick={() => setStage('map')} className="bg-white text-black px-16 py-6 rounded-full font-black uppercase text-[11px] tracking-widest hover:bg-emerald-500 hover:text-white transition-all">Cancel Dispatch</button>
+          <button onClick={() => setStage('map')} className="text-zinc-500 font-black uppercase text-[10px] tracking-widest hover:text-white transition-all underline underline-offset-8">Abort Dispatch</button>
         </div>
       )}
     </div>
