@@ -3,6 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  // Ensure this is exactly '/' for Vercel
-  base: '/', 
+  base: '/', // This is the fix for the "First Screen Only" issue
 })
