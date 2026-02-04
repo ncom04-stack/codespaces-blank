@@ -1,3 +1,5 @@
+// Focus: Intelligence, credibility, calm Apple‑like polish
+
 import React, { useState, useEffect } from 'react';
 import {
   Zap,
@@ -36,14 +38,11 @@ const App = () => {
     { title: 'BESS Intelligence', detail: 'Harmony Boost integrates storage to bypass grid constraints.' }
   ];
 
-  /* ---------------- SIMULATIONS ---------------- */
+  /* ---------------- EFFECTS ---------------- */
 
-  // Confidence score (Apple-style calm intelligence)
   useEffect(() => {
     if (stage === 'details' && selectedPod) {
-      // Soft calculation, feels intelligent not flashy
-      const score = Math.min(99, Math.round(selectedPod.reliability));
-      setConfidence(score);
+      setConfidence(Math.min(99, Math.round(selectedPod.reliability)));
     }
   }, [stage, selectedPod]);
 
@@ -96,18 +95,29 @@ const App = () => {
       {/* WELCOME */}
       {stage === 'welcome' && (
         <div className="h-full flex flex-col items-center justify-center text-center relative overflow-hidden">
-          <div className={`absolute inset-0 bg-gradient-to-t from-emerald-500/20 via-emerald-500/10 to-transparent transition-all duration-[1800ms] ${liquidFill ? 'translate-y-0' : 'translate-y-full'}`} />
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            {/* Primary ripple */}
+            <div className={`w-40 h-40 rounded-full border border-emerald-500/20 ${liquidFill ? 'animate-ping' : ''}`} />
+            {/* Secondary soft ripple */}
+            <div className={`absolute w-72 h-72 rounded-full border border-emerald-500/10 ${liquidFill ? 'animate-pulse' : ''}`} />
+          </div>
+
+          <div className={`absolute inset-0 bg-gradient-to-t from-emerald-500/20 via-emerald-500/5 to-transparent transition-all duration-[2000ms] ease-out ${liquidFill ? 'translate-y-0' : 'translate-y-full'}`} />
+
           <Zap className="text-emerald-400 mb-6 z-10" size={56} />
+
           <h1
             onClick={() => {
               setLiquidFill(true);
               setTimeout(() => setStage('map'), 1600);
             }}
-            className="text-8xl font-black italic cursor-pointer z-10"
+            className="text-8xl font-black italic cursor-pointer z-10 active:scale-[0.98] transition-transform"
           >
             XCHARGE<span className="text-emerald-400">.</span>
           </h1>
+
           <p className="text-emerald-300 tracking-[0.4em] text-xs mt-6 z-10">CHARGE ON DEMAND</p>
+          <p className="text-zinc-500 text-xs mt-8 z-10">Tap to power up</p>
         </div>
       )}
 
@@ -117,7 +127,7 @@ const App = () => {
           <div className="flex-1 relative">
             <iframe
               title="map"
-              className="w-full h-full grayscale brightness-75"
+              className="w-full h-full brightness-90 saturate-[0.85] contrast-[1.05]"
               src="https://www.google.com/maps?q=gurugram&z=14&output=embed"
             />
             <div className="absolute top-6 left-6 bg-black/60 backdrop-blur-xl px-5 py-3 rounded-xl border border-white/5">
@@ -152,6 +162,7 @@ const App = () => {
             <ChevronLeft onClick={() => setStage('map')} className="absolute top-8 right-8 cursor-pointer" />
             <h2 className="text-5xl font-black italic mb-4">{selectedPod.name}</h2>
             <p className="text-zinc-400 mb-8">{selectedPod.intel}</p>
+
             <div className="grid grid-cols-3 gap-6 mb-6">
               <div className="col-span-3 bg-white/5 border border-white/10 rounded-2xl p-4">
                 <p className="text-[10px] tracking-widest uppercase text-emerald-500 mb-2">Dispatch Confidence</p>
@@ -159,14 +170,16 @@ const App = () => {
                   <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
                     <div className="h-full bg-emerald-500 transition-all duration-700" style={{ width: `${confidence}%` }} />
                   </div>
-                  <span className="text-sm font-semibold text-white">{confidence}%</span>
+                  <span className="text-sm font-semibold">{confidence}%</span>
                 </div>
                 <p className="text-xs text-zinc-400 mt-2">Optimized for reliability, ETA & grid conditions</p>
               </div>
+
               <Stat icon={<Gauge />} label="Power" value={selectedPod.power} />
               <Stat icon={<Signal />} label="Reliability" value={`${selectedPod.reliability}%`} />
               <Stat icon={<Timer />} label="ETA" value={`${selectedPod.eta} min`} />
             </div>
+
             <button
               onClick={() => setShowPayment(true)}
               className="w-full bg-emerald-500 text-black py-6 rounded-2xl font-black tracking-widest"
